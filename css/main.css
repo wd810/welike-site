@@ -528,6 +528,7 @@ header .fa {
 .section-5 .box {
     position: relative;
     padding: 0;
+    max-width: 18%;
 }
 
 .section-5 .img-fluid {
