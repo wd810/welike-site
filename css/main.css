@@ -122,6 +122,10 @@ header .fa {
     border-right: 0;
 }
 
+header .navbar-brand img {
+    max-width: 200px;
+}
+
 .fa-facebook-official {color: #4867aa;}
 .fa-twitter {color: #1da1f2;}
 .fa-pinterest {color: #bd081b;}
