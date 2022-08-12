@@ -206,60 +206,49 @@
     <script src="../js/animate.js"></script>
     <script src="../js/custom.js"></script>
     <script>
-        const getLCH = async () => {
-            const res = await fetch('http://juno-main.cu8ic.com:19882/balances')
-            const data = await res.json()
-            return data
-        }
-        
-        getLCH().then(data => {
-            document.getElementById('lch').innerText = data[0].amount
-        });
-        
-        
-        const getBalance = async () => {
-            const res = await fetch('https://mainnet-node.like.co/cosmos/staking/v1beta1/delegations/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv', {
-                                    method: "GET",
-                                    mode: "cors",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                })
-            const data = await res.json()
-            return data
-        }
-        
-        getBalance().then((data) => {
-            console.log(data)
-            document.getElementById('balance').innerText = data.delegation_responses[0].balance.amount
-            document.getElementById('delegation').innerText = data.delegation_responses[0].delegation.shares
+    const getData = async (url) => {
+        const res = await fetch(url, {
+                                method: "GET",
+                                mode: "cors",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            })
+        const data = await res.json()
+        return data
+    }
+    $(document).ready(function() {
+        const data = {}
+        getData("http://juno-main.cu8ic.com:19882/balances")
+        .then((res) => {
+            data['lch'] = res[0].amount
+            $('#lch').text(data['lch'])
         })
 
-        const getReward = async () => {
-            const res = await fetch('https://mainnet-node.like.co/cosmos/distribution/v1beta1/delegators/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv/rewards', {
-                                    method: "GET",
-                                    mode: "cors",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                })
-            const data = await res.json()
-            return data
-        }
+        getData('https://mainnet-node.like.co/cosmos/staking/v1beta1/delegations/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv')
+        .then(res => {
+            data['delegation'] = res.delegation_responses[0].delegation.shares / 1000000000
+            $('#delegation').text(data['delegation'])
+        })
 
-        getReward().then((data) => {
-            document.getElementById('reward').innerText = data.total[0].amount
+        getData('https://mainnet-node.like.co/cosmos/distribution/v1beta1/delegators/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv/rewards')
+        .then(res => {
+            data['reward'] = res.total[0].amount / 1000000000
+            $('#reward').text(data['reward'])
+        })
+
+        getData('https://mainnet-node.like.co/cosmos/bank/v1beta1/balances/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv')
+        .then(res => {
+            data['balance'] = res.balances[0].amount / 1000000000
+            $('#balance').text(data['balance'])
         })
 
         setTimeout(() => {
-            const lch = Number(document.getElementById('lch').innerText)
-            const reward = Number(document.getElementById('reward').innerText)
-            const delegation = Number(document.getElementById('delegation').innerText)
-            const balance = Number(document.getElementById('balance').innerText)
-            document.getElementById('like').innerText = (reward + delegation + balance) / lch
-        }, 700)
+            const rate = (data['balance'] + data['reward'] + data['delegation']) / data['lch']
+            $('#like').text(rate)
+        }, 300)
         
-
+    })
 
     </script>
 </body>
