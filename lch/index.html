@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../css/animate.css">
     <link rel="stylesheet" href="../css/main.css">
 
-    <title>more</title>
+    <title>LCH</title>
     <style>
         .jumbotron {
             width: 100%;
@@ -221,7 +221,7 @@
         const data = {}
         getData("http://juno-main.cu8ic.com:19882/balances")
         .then((res) => {
-            data['lch'] = res[0].amount
+            data['lch'] = res[0].amount / 100
             $('#lch').text(data['lch'])
         })
 
@@ -244,9 +244,9 @@
         })
 
         setTimeout(() => {
-            const rate = (data['balance'] + data['reward'] + data['delegation']) / data['lch']
+            const rate = (data['balance'] + data['reward'] + data['delegation']) / (1000000 - data['lch']) 
             $('#like').text(rate)
-        }, 300)
+        }, 500)
         
     })
 
