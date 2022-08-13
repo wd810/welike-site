@@ -219,7 +219,7 @@
     }
     $(document).ready(function() {
         const data = {}
-        getData("//juno-main.cu8ic.com:19882/balances")
+        getData("http://juno-main.cu8ic.com:19882/balances")
         .then((res) => {
             data['lch'] = res[0].amount / 100
             $('#lch').text(data['lch'])
