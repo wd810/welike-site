@@ -117,9 +117,13 @@
             <div class="row" data-aos="fade-up" data-aos-duration="700">
                 <div class="col-sm-12 col-lg-12 box">
                     <p>LCH balance: <span id="lch"></span></p>
-                    <p>Like delegation: <span id="delegation"></span></p>
-                    <p>Like balance: <span id="balance"></span></p>
-                    <p>Like reward: <span id="reward"></span></p>
+                    <p>Total Like in pool: <span id="total"></span></p>
+                        <!--
+                        <p>Like delegation: <span id="delegation"></span></p>
+                        <p>Like balance: <span id="balance"></span></p>
+                        <p>Like reward: <span id="reward"></span></p>
+
+                        -->
                 </div>
             </div>
             
@@ -217,10 +221,25 @@
         const data = await res.json()
         return data
     }
+
+    const getLCH = async (url) => {
+        const res = await fetch("https://cors-anywhere.herokuapp.com/http://juno-main.cu8ic.com:19882/balances", {
+            method: "GET",
+            mode: "cors",
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Host': 'cors-anywhere.herokuapp.com',
+                'Cache-Control': 'no-cache'
+            }
+        })
+        const data = await res.json()
+        return data
+    }
+
     $(document).ready(function() {
         const data = {}
-        getData("http://juno-main.cu8ic.com:19882/balances")
-        .then((res) => {
+        getLCH('https://cors-anywhere.herokuapp.com/http://juno-main.cu8ic.com:19882/balances')
+        .then(res => {
             data['lch'] = res[0].amount / 100
             $('#lch').text(data['lch'])
         })
@@ -228,24 +247,26 @@
         getData('https://mainnet-node.like.co/cosmos/staking/v1beta1/delegations/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv')
         .then(res => {
             data['delegation'] = res.delegation_responses[0].delegation.shares / 1000000000
-            $('#delegation').text(data['delegation'])
+            // $('#delegation').text(data['delegation'])
         })
 
         getData('https://mainnet-node.like.co/cosmos/distribution/v1beta1/delegators/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv/rewards')
         .then(res => {
             data['reward'] = res.total[0].amount / 1000000000
-            $('#reward').text(data['reward'])
+            // $('#reward').text(data['reward'])
         })
 
         getData('https://mainnet-node.like.co/cosmos/bank/v1beta1/balances/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv')
         .then(res => {
             data['balance'] = res.balances[0].amount / 1000000000
-            $('#balance').text(data['balance'])
+            // $('#balance').text(data['balance'])
         })
 
         setTimeout(() => {
-            const rate = (data['balance'] + data['reward'] + data['delegation']) / (1000000 - data['lch']) 
-            $('#like').text(rate)
+            data['total'] = data['balance'] + data['reward'] + data['delegation']
+            const rate = data['total'] / (1000000 - data['lch']) 
+            $('#like').text(rate.toFixed(2))
+            $("#total").text(data['total'])
         }, 500)
         
     })
