@@ -242,6 +242,10 @@
         .then(res => {
             data['lch'] = res[0].amount / 100
             $('#lch').text(data['lch'])
+            data['total'] = data['balance'] + data['reward'] + data['delegation']
+            const rate = data['total'] / (1000000 - data['lch']) 
+            $('#like').text(rate.toFixed(2))
+            $("#total").text(data['total'])
         })
 
         getData('https://mainnet-node.like.co/cosmos/staking/v1beta1/delegations/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv')
@@ -260,14 +264,8 @@
         .then(res => {
             data['balance'] = res.balances[0].amount / 1000000000
             // $('#balance').text(data['balance'])
+            
         })
-
-        setTimeout(() => {
-            data['total'] = data['balance'] + data['reward'] + data['delegation']
-            const rate = data['total'] / (1000000 - data['lch']) 
-            $('#like').text(rate.toFixed(2))
-            $("#total").text(data['total'])
-        }, 500)
         
     })
 
