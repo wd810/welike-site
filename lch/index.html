@@ -248,8 +248,9 @@
 
         const getDelegation = getData('https://mainnet-node.like.co/cosmos/staking/v1beta1/delegations/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv')
         .then(res => {
-            data['delegation'] = res.delegation_responses[0].delegation.amount / 1000000000
-            return res.delegation_responses[0].delegation.amount / 1000000000
+            // console.log(res)
+            data['delegation'] = res.delegation_responses[0].balance.amount / 1000000000
+            return res.delegation_responses[0].balance.amount / 1000000000
         })
 
         const getRewad = getData('https://mainnet-node.like.co/cosmos/distribution/v1beta1/delegators/like1j8ep8yg82y6x8arul25fmae3tw80f00dgvd6yv/rewards')
